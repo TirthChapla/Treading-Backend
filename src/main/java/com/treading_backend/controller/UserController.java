@@ -101,7 +101,7 @@ public class UserController {
 			@RequestHeader("Authorization") String jwt,
 			@PathVariable String otp
 	) throws Exception
-	{
+	 {
 		/// 👉  get user by JWT
 		User user = userService.findUserProfileByJwt(jwt);
 

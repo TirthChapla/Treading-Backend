@@ -9,10 +9,27 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+    /**
+     * 👉 This service handles all the core logic related to the "Forgot Password" functionality.
+     * ✅ It creates, retrieves, verifies, and deletes password reset tokens (OTP-based).
+     *
+     * What this service does:
+     * 🔐 createToken(...) - Generates a new ForgotPasswordToken for a user (with OTP, ID, etc.) and saves it.
+     * 🔍 findById(...) - Retrieves a token from the database by its unique ID.
+     * 🧑 findByUser(...) - Retrieves a token using the user's ID (used for checking if the user has a valid token).
+     * ❌ deleteToken(...) - Deletes the token from the DB after successful verification or expiration.
+     * ✔️ verifyToken(...) - Compares the OTP entered by the user with the one stored in the token to validate.
+     *
+     * 📦 Uses ForgotPasswordRepository to persist and fetch tokens from the database.
+     * 💡 This service ensures OTP verification logic is handled cleanly and securely.
+     */
+
 @Service
 public class ForgotPasswordServiceImpl implements ForgotPasswordService{
     @Autowired
     private ForgotPasswordRepository forgotPasswordRepository;
+
+
 
     @Override
     public ForgotPasswordToken createToken(User user,
