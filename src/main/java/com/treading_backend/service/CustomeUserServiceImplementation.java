@@ -27,6 +27,7 @@ public class CustomeUserServiceImplementation implements UserDetailsService {
 		this.userRepository=userRepository;
 	}
 
+
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
@@ -37,7 +38,8 @@ public class CustomeUserServiceImplementation implements UserDetailsService {
 
 			throw new UsernameNotFoundException("user not found with email  - "+username);
 		}
-		
+
+		/// 👉 (like "ADMIN" or "USER")
 		List<GrantedAuthority> authorities=new ArrayList<>();
 
 		return new org.springframework.security.core.userdetails.User(

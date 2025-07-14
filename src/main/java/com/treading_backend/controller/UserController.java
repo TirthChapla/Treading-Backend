@@ -69,24 +69,53 @@ public class UserController {
 		return new ResponseEntity<>(user, HttpStatus.ACCEPTED);
 	}
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	///❤️ HTTP Method	                 Use Case
+
+	///     POST	         Create a new resource
+	///     PUT	             Replace an entire resource
+	///    PATCH	         Update part of a resource
+	///
+	/// ✅ When to Use @PatchMapping:
+	/// When you want to partially update fields of an entity (e.g., just the status, name, or email).
+	/// Ideal for UI forms that edit a small part of the data.
+
+	/// ✅ ENABLE TWO-FACTOR AUTHENTICATION - VERIFY OTP
+	///
+	/// 👉 1. Endpoint: `PATCH /api/users/enable-two-factor/verify-otp/{otp}`
+	/// 👉 2. JWT is passed via request header for user identification
+	/// 👉 3. OTP is passed as a path variable
+	/// 👉 4. Extract user details from JWT
+	/// 👉 5. Fetch the user's verification data (OTP, type: EMAIL/MOBILE)
+	/// 👉 6. Verify the entered OTP against the stored one
+	/// 👉 7. If verified:
+	///     🔹 Enable two-factor auth for user (via EMAIL or MOBILE)
+	///     🔹 Delete the OTP record
+	///     🔹 Return the updated user
+	/// 👉 8. If OTP is wrong:
+	///
+
 	@PatchMapping("/api/users/enable-two-factor/verify-otp/{otp}")
 	public ResponseEntity<User> enabledTwoFactorAuthentication(
 			@RequestHeader("Authorization") String jwt,
 			@PathVariable String otp
-	) throws Exception {
-
-
+	) throws Exception
+	{
+		/// 👉  get user by JWT
 		User user = userService.findUserProfileByJwt(jwt);
 
-
+		///👉 we are getting verification code from the DB
 		VerificationCode verificationCode = verificationService.findUsersVerification(user);
 
+		///👉 this will tell to verify via Email or Mobile No.
 		String sendTo=verificationCode.getVerificationType().equals(VerificationType.EMAIL)?verificationCode.getEmail():verificationCode.getMobile();
 
-
+		///👉 it will check by comparing DB OTP and user entered OTP
 		boolean isVerified = verificationService.VerifyOtp(otp, verificationCode);
 
-		if (isVerified) {
+		if (isVerified)
+		{
 			User updatedUser = userService.enabledTwoFactorAuthentication(verificationCode.getVerificationType(),
 					sendTo,user);
 			verificationService.deleteVerification(verificationCode);

@@ -53,14 +53,14 @@ public class JwtTokenValidator extends OncePerRequestFilter
 			
 				try
 				{
-//					✅ This generates a SecretKey using the secret string defined in JwtConstant.SECRET_KEY.
-//					🔐 This key is used to verify the signature of the JWT.
+///					✅ This generates a SecretKey using the secret string defined in JwtConstant.SECRET_KEY.
+///					🔐 This key is used to verify the signature of the JWT.
 					SecretKey key= Keys.hmacShaKeyFor(JwtConstant.SECRET_KEY.getBytes());
 
 
-//					✅ This line parserBuilder and verifies the JWT token.
-//					If valid, it retrieves the Claims (key-value data inside the token).
-//					📦 For example: "email": "abc@gmail.com", "authorities": "ROLE_USER"
+///					✅ This line parserBuilder and verifies the JWT token.
+///					If valid, it retrieves the Claims (key-value data inside the token).
+///					📦 For example: "email": "abc@gmail.com", "authorities": "ROLE_USER"
 
 					Claims claims=Jwts
 							.parserBuilder()
@@ -69,29 +69,30 @@ public class JwtTokenValidator extends OncePerRequestFilter
 							.parseClaimsJws(jwt)
 							.getBody();
 
-					//✅ Extracts the email from the JWT payload.
+					///✅ Extracts the email from the JWT payload.
 					String email=String.valueOf(claims.get("email"));
 
-					//✅ Extracts the roles/authorities string from JWT (e.g., "ROLE_ADMIN,ROLE_USER").
+					///✅ Extracts the roles/authorities string from JWT (e.g., "ROLE_ADMIN,ROLE_USER").
 					String authorities=String.valueOf(claims.get("authorities"));
 
 					System.out.println("authorities -------- "+authorities);
 
 
-					//✅ Converts comma-separated roles into Spring Security's GrantedAuthority list.
-					//📍 Example:
-					// "ROLE_ADMIN,ROLE_USER" → [new SimpleGrantedAuthority("ROLE_ADMIN"), ...]
+					///✅ Converts comma-separated roles into Spring Security's GrantedAuthority list.
+					///📍 Example:
+					/// "ROLE_ADMIN,ROLE_USER" → [new SimpleGrantedAuthority("ROLE_ADMIN"), ...]
 					List<GrantedAuthority> auths=AuthorityUtils.commaSeparatedStringToAuthorityList(authorities);
 
-					//✅ Creates an Authentication object for the current user.
-					//🔑 Username is email, password is null, authorities are roles.
+					///✅ Creates an Authentication object for the current user.
+					///🔑 Username is email, password is null, authorities are roles.
 					Authentication athentication=new UsernamePasswordAuthenticationToken(email,null, auths);
 
 
-					//✅ Sets this authentication into the Spring Security Context, so the user is now "logged in" for this request.
+					///✅ Sets this authentication into the Spring Security Context, so the user is now "logged in" for this request.
 					SecurityContextHolder.getContext().setAuthentication(athentication);
 
-				} catch (Exception e) {
+				}
+				catch (Exception e) {
 					throw new RuntimeException("invalid token...");
 				}
 		}

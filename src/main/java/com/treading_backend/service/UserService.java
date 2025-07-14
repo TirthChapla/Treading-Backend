@@ -6,7 +6,8 @@ import com.treading_backend.exception.UserException;
 import com.treading_backend.model.User;
 
 
-public interface UserService {
+public interface UserService
+{
 
 	public User findUserProfileByJwt(String jwt) throws UserException;
 	

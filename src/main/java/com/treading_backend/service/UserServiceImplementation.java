@@ -15,7 +15,8 @@ import java.util.Optional;
 
 
 @Service
-public class UserServiceImplementation implements UserService {
+public class UserServiceImplementation implements UserService
+{
 
 	@Autowired
 	private UserRepository userRepository;
@@ -25,10 +26,11 @@ public class UserServiceImplementation implements UserService {
 	
 	
 	@Override
-	public User findUserProfileByJwt(String jwt) throws UserException {
+	public User findUserProfileByJwt(String jwt) throws UserException
+	{
+
 		String email= JwtProvider.getEmailFromJwtToken(jwt);
-		
-		
+
 		User user = userRepository.findByEmail(email);
 		
 		if(user==null) {
