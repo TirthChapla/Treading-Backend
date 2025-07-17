@@ -30,6 +30,7 @@ public class WatchlistController {
         this.userService = userService;
     }
 
+
     // ✅ user ni watchlist return karse (JWT thi user find thase)
     @GetMapping("/user")
     public ResponseEntity<Watchlist> getUserWatchlist(

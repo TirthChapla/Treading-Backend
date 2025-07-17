@@ -26,6 +26,7 @@ public class AssetController {
         this.assetService = assetService;
     }
 
+
     // ✅ single asset lavva mate (ID pr base)
     @GetMapping("/{assetId}")
     public ResponseEntity<Asset> getAssetById(@PathVariable Long assetId) {
