@@ -15,56 +15,75 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/watchlist")
 public class WatchlistController {
+
     private final WatchlistService watchlistService;
     private final UserService userService;
 
     @Autowired
     private CoinService coinService;
 
+    // ✅ constructor inject karine services set kari
     @Autowired
     public WatchlistController(WatchlistService watchlistService,
                                UserService userService) {
         this.watchlistService = watchlistService;
-        this.userService=userService;
+        this.userService = userService;
     }
 
+    // ✅ user ni watchlist return karse (JWT thi user find thase)
     @GetMapping("/user")
     public ResponseEntity<Watchlist> getUserWatchlist(
             @RequestHeader("Authorization") String jwt) throws Exception {
 
-            User user=userService.findUserProfileByJwt(jwt);
-            Watchlist watchlist = watchlistService.findUserWatchlist(user.getId());
-            return ResponseEntity.ok(watchlist);
+        // 👉 pela user find kariye token mathi
+        User user = userService.findUserProfileByJwt(jwt);
 
+        // 👉 ena userId thi watchlist lavie
+        Watchlist watchlist = watchlistService.findUserWatchlist(user.getId());
+
+        return ResponseEntity.ok(watchlist); // ✅ found, return
     }
 
+    // ✅ first time user watchlist create karse
     @PostMapping("/create")
     public ResponseEntity<Watchlist> createWatchlist(
             @RequestHeader("Authorization") String jwt) throws UserException {
-        User user=userService.findUserProfileByJwt(jwt);
+
+        // 👉 user auth
+        User user = userService.findUserProfileByJwt(jwt);
+
+        // ❤️ new watchlist banavi didhi
         Watchlist createdWatchlist = watchlistService.createWatchList(user);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdWatchlist);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdWatchlist); // ✅ 201 response
     }
 
+    // ✅ watchlist ID thi ek specific watchlist lavie
     @GetMapping("/{watchlistId}")
     public ResponseEntity<Watchlist> getWatchlistById(
             @PathVariable Long watchlistId) throws Exception {
 
-            Watchlist watchlist = watchlistService.findById(watchlistId);
-            return ResponseEntity.ok(watchlist);
+        // 👉 direct DB mathi find kariye id thi
+        Watchlist watchlist = watchlistService.findById(watchlistId);
 
+        return ResponseEntity.ok(watchlist); // ✅ send kari didhi
     }
 
+    // ✅ coin add/remove thase from watchlist (toggle jvu logic che)
     @PatchMapping("/add/coin/{coinId}")
     public ResponseEntity<Coin> addItemToWatchlist(
             @RequestHeader("Authorization") String jwt,
             @PathVariable String coinId) throws Exception {
 
+        // 👉 user ne auth kariye pela
+        User user = userService.findUserProfileByJwt(jwt);
 
-            User user=userService.findUserProfileByJwt(jwt);
-            Coin coin=coinService.findById(coinId);
-            Coin addedCoin = watchlistService.addItemToWatchlist(coin, user);
-            return ResponseEntity.ok(addedCoin);
+        // 👉 coin find kariye from DB
+        Coin coin = coinService.findById(coinId);
 
+        // ❤️ if already che to remove thase, nai to add thase
+        Coin addedCoin = watchlistService.addItemToWatchlist(coin, user);
+
+        return ResponseEntity.ok(addedCoin); // ✅ final coin return
     }
 }

@@ -10,45 +10,60 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
-public class WatchlistServiceImpl implements WatchlistService{
+public class WatchlistServiceImpl implements WatchlistService {
+
     @Autowired
     private WatchlistRepository watchlistRepository;
 
-
+    // ✅ User ID thi watchlist find karvani
     @Override
     public Watchlist findUserWatchlist(Long userId) throws Exception {
-        Watchlist watchlist=watchlistRepository.findByUserId(userId);
-        if(watchlist==null){
-            throw new Exception("watch not found");
+        Watchlist watchlist = watchlistRepository.findByUserId(userId); // 👉 DB thi fetch kariyu
+
+        if (watchlist == null) {
+            throw new Exception("watch not found"); // ❌ user watchlist madej nai
         }
-        return watchlist;
+
+        return watchlist; // ✅ found, return kari didho
     }
 
+    // ✅ navi watchlist banavvani for a new user
     @Override
     public Watchlist createWatchList(User user) {
-        Watchlist watchlist=new Watchlist();
+        Watchlist watchlist = new Watchlist();
+
+        // 👉 user set karvo important che
         watchlist.setUser(user);
-        return watchlistRepository.save(watchlist);
+
+        return watchlistRepository.save(watchlist); // ❤️ save into DB
     }
 
+    // ✅ watchlist find karvi ID thi
     @Override
     public Watchlist findById(Long id) throws Exception {
         Optional<Watchlist> optionalWatchlist = watchlistRepository.findById(id);
-        if(optionalWatchlist.isEmpty()){
-            throw new Exception("watch list not found");
+
+        if (optionalWatchlist.isEmpty()) {
+            throw new Exception("watch list not found"); // ❌ invalid id hoy to
         }
-        return optionalWatchlist.get();
+
+        return optionalWatchlist.get(); // ✅ found, aapu watchlist
     }
 
+    // ✅ coin watchlist ma add/remove karvani
     @Override
-    public Coin addItemToWatchlist(Coin coin,User user) throws Exception {
-        Watchlist watchlist=findUserWatchlist(user.getId());
+    public Coin addItemToWatchlist(Coin coin, User user) throws Exception {
+        // 👉 pela user ni watchlist lavie
+        Watchlist watchlist = findUserWatchlist(user.getId());
 
-        if(watchlist.getCoins().contains(coin)){
-            watchlist.getCoins().remove(coin);
+        // 👉 already hoy to remove kari devu (toggle logic)
+        if (watchlist.getCoins().contains(coin)) {
+            watchlist.getCoins().remove(coin); // ❌ remove thase
+        } else {
+            watchlist.getCoins().add(coin); // ✅ add thase
         }
-        else watchlist.getCoins().add(coin);
-        watchlistRepository.save(watchlist);
-        return coin;
+
+        watchlistRepository.save(watchlist); // ❤️ update DB
+        return coin; // ✅ final coin return kariye
     }
 }
